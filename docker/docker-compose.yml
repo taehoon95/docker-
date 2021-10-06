@@ -1,0 +1,22 @@
+version: "3"
+services:
+  db: # 서비스 명
+    image: mysql # 사용할 이미지
+    container_name: mysql # 컨테이너 이름 설정
+    ports:
+      - "3308:3306" # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+    environment: # -e 옵션
+      MYSQL_ROOT_PASSWORD: "1"  # MYSQL 패스워드 설정 옵션
+    command: # 명령어 실행
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes: # init시 mysql-init-files 폴더 안의 sql 파일 실행
+      - ./db/backup/:/var/lib/mysql
+      - ./mysql-init-files/:/docker-entrypoint-initdb.d/
+  tomcat:
+    image: tomcat:9.0.53-jdk16
+    container_name: tomcat
+    ports:
+    - "8888:8080"
+    volumes: 
+    - ./webapps/:/usr/local/tomcat/webapps/
